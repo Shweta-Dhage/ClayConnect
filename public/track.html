@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Track Order</title>
+
+    <style>
+
+        body{
+            background:#f6f1eb;
+            font-family:Segoe UI;
+            padding:50px;
+        }
+
+        .box{
+            max-width:700px;
+            margin:auto;
+            background:white;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.1);
+            text-align:center;
+        }
+
+        h1{
+            color:#6b4f3a;
+            margin-bottom:30px;
+        }
+
+        p{
+            margin:15px 0;
+            font-size:18px;
+        }
+
+        .paid{
+            color:green;
+            font-weight:bold;
+            font-size:20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>📦 Order Tracking</h1>
+
+    <div id="track"></div>
+
+</div>
+
+<script>
+
+const id =
+new URLSearchParams(window.location.search)
+.get("id");
+
+fetch("http://localhost:5000/track/" + id)
+
+.then(res => res.json())
+
+.then(order => {
+
+    document.getElementById("track").innerHTML = `
+
+        <p><b>Order ID:</b> #${order.id}</p>
+
+        <p><b>Name:</b> ${order.name}</p>
+
+        <p><b>Phone:</b> ${order.phone}</p>
+
+        <p><b>Address:</b> ${order.address}</p>
+
+        <p><b>Total:</b> ₹${order.total}</p>
+
+        <p><b>Payment ID:</b> ${order.payment_id}</p>
+
+        <p class="paid">
+            ${order.payment_status}
+        </p>
+
+        <p>🚚 Your order is being prepared.</p>
+
+    `;
+
+});
+
+</script>
+
+</body>
+
+</html>         

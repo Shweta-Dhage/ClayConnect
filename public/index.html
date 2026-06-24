@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClayConnect</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+    <div class="modal-box">
+        <h2>Login</h2>
+
+        <input type="text"
+        placeholder="Email"
+        id="loginUser">
+        <small id="login_email_error" class="error"></small>
+
+        <input type="password" placeholder="Password" id="loginPass">
+        <small id="login_pass_error" class="error"></small>
+
+        <button onclick="loginUser()">Login</button>
+        <span class="close" onclick="closeModal()">X</span>
+    </div>
+</div>
+
+<!-- SIGNUP -->
+<div class="modal" id="signupChoiceModal">
+    <div class="modal-box">
+        <h2>Sign Up As</h2>
+
+        <button onclick="openCustomerSignup()">Customer</button>
+        <button onclick="openPotterSignup()">Potter</button>
+
+        <span class="close" onclick="closeModal()">X</span>
+    </div>
+</div>
+
+<!-- CUSTOMER SIGNUP -->
+<div class="modal" id="customerModal">
+    <div class="modal-box">
+        <h2>Customer Signup</h2>
+
+        <input type="text" placeholder="Full Name" id="c_name">
+        <small id="c_name_error" class="error"></small>
+
+        <input type="email"
+        placeholder="Email"
+        id="c_email">
+        <small id="c_email_error" class="error"></small>
+
+        <input type="text" placeholder="Phone Number" id="c_phone">
+        <small id="c_phone_error" class="error"></small>
+
+        <input type="password" placeholder="Password" id="c_pass">
+        <small id="c_pass_error" class="error"></small>
+        <button onclick="registerCustomer()">Register Customer</button>
+
+        <span class="close" onclick="closeModal()">X</span>
+    </div>
+</div>
+
+<!-- POTTER SIGNUP -->
+<div class="modal" id="potterModal">
+    <div class="modal-box">
+        <h2>Potter Signup</h2>
+
+        <input type="text" placeholder="Full Name" id="p_name">
+        <small id="p_name_error" class="error"></small>
+
+        <input type="email"
+        placeholder="Email"
+        id="p_email">
+        <small id="p_email_error" class="error"></small>
+
+        <input type="text" placeholder="Studio Name" id="p_studio">
+        <small id="p_studio_error" class="error"></small>
+
+        <input type="number"
+        placeholder="Experience (Years)"
+        id="p_exp"
+        min="0"
+        max="50">
+        <small id="p_exp_error" class="error"></small>
+
+        <input type="password" placeholder="Password" id="p_pass">
+        <small id="p_pass_error" class="error"></small>
+
+        <button onclick="registerPotter()">Register Potter</button>
+
+        <span class="close" onclick="closeModal()">X</span>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar">
+
+    <h2 class="logo">ClayConnect</h2>
+
+    <nav class="nav-right">
+
+        <a href="#explore">Explore</a>
+        <a href="#" onclick="openContact()">Contact</a>
+
+        <button class="nav-btn" onclick="openLogin()">Login</button>
+        <button class="nav-btn signup" onclick="openSignupChoice()">Sign Up</button>
+        
+</select>
+
+        <button class="nav-btn cart-btn" onclick="window.location.href='cart.html'">
+    🛒 Cart <span id="cartCount">0</span>
+</button>
+
+    </nav>
+
+</header>
+
+<!-- HERO -->
+ <!-- HERO SLIDER -->
+<section class="hero">
+
+    <div class="simple-slider" id="heroSlider">
+
+        <img src="images/img1.jpg" class="active">
+        <img src="images/img18.jpg">
+        <img src="images/img9.jpg">
+        <img src="images/img2.jpg">
+        <img src="images/img3.jpg">
+
+    </div>
+
+    <div class="hero-content">
+        <h1>ClayConnect</h1>
+        <p>Handmade Clay Pots Marketplace</p>
+    </div>
+
+    <button class="hero-prev" onclick="prevSlide()">❮</button>
+   <button class="hero-next" onclick="nextSlide()">❯</button>>
+
+</section>
+
+<!-- SLIDER -->
+<section class="slider-section" id="explore">
+    <h2>EXPLORE POTS</h2>
+
+    <div class="slider-wrapper">
+
+        <button class="slider-btn prev" onclick="scrollSliderLeft()">❮</button>
+
+       <div class="slider" id="slider">
+
+            <div class="card" onclick="openCategory('manipur')">
+                <img src="images/manipir.jpg">
+                <div class="overlay">Manipur Clay Studio</div>
+            </div>
+
+            <div class="card" onclick="openCategory('jaipur')">
+                <img src="images/jaipur.jpg">
+                <div class="overlay">Jaipur Pots</div>
+            </div>
+
+            <div class="card" onclick="openCategory('rajasthan')">
+                <img src="images/rajsthani.jpg">
+                <div class="overlay">Rajasthan Mitti</div>
+            </div>
+
+            <div class="card" onclick="openCategory('gujarat')">
+                <img src="images/gujrat.jpg">
+                <div class="overlay">Gujarat Terracotta</div>
+            </div>
+
+            <div class="card" onclick="openCategory('kutch')">
+                <img src="images/kalutch.jpg">
+                <div class="overlay">Kutch Clay</div>
+            </div>
+
+            <div class="card" onclick="openCategory('udaipur')">
+                <img src="images/udipur.jpg">
+                <div class="overlay">Udaipur Pottery</div>
+            </div>
+
+            <div class="card" onclick="openCategory('maharashtra')">
+                <img src="images/maharashta.jpg">
+                <div class="overlay">Maharashtra Mitti</div>
+            </div>
+
+        </div>
+
+        
+
+<button class="slider-btn next" onclick="scrollSliderRight()">❯</button>
+
+    </div>
+</section>
+
+<div class="modal" id="contactModal">
+    <div class="modal-box contact-box">
+
+        <h2>📩 Contact Us</h2>
+        <p class="contact-sub">
+            We'd love to hear from you. Send your message below.
+        </p>
+
+        <div class="input-group">
+            <span>👤</span>
+            <input id="cname"
+                   type="text"
+                   placeholder="Your Name">
+        </div>
+        <small id="contact_name_error" class="error"></small>
+
+        <div class="input-group">
+            <span>📧</span>
+            <input id="cemail"
+                   type="email"
+                   placeholder="Your Email">
+        </div>
+        <small id="contact_email_error" class="error"></small>
+
+        <div class="input-group">
+            <span>💬</span>
+            <textarea id="cmsg"
+                      placeholder="Write your message here..."
+                      rows="4"></textarea>
+        </div>
+        <small id="contact_msg_error" class="error"></small>
+
+        <button class="contact-btn"
+                onclick="sendMessage()">
+            Send Message ✈️
+        </button>
+
+        <span class="close"
+              onclick="closeModal()">✖</span>
+    </div>
+</div>
+
+
+
+<!-- FOOTER -->                                                                                               
+<footer>
+    <p>© 2026 ClayConnect</p>
+</footer>
+
+
+
+<script src="script.js" defer></script>
+
+</body>
+</html>                        

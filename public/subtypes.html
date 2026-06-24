@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ClayConnect - Subtypes</title>
+
+<style>
+
+/* ================= BASE ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI;
+}
+
+body{
+    background:#f6f1eb;
+}
+
+/* ================= NAV ================= */
+.navbar{
+    background:#5a3a24;
+    color:white;
+    padding:14px 20px;
+}
+
+/* ================= HERO ================= */
+.hero-mini{
+    width:92%;
+    margin:15px auto;
+    padding:25px;
+    border-radius:18px;
+    text-align:center;
+    color:white;
+    background: linear-gradient(135deg,#8b5e3c,#d2a679);
+}
+
+/* ================= SEARCH ================= */
+.search-box{
+    width:92%;
+    margin:10px auto;
+    display:flex;
+    gap:10px;
+}
+
+.search-box input,
+.search-box select{
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    flex:1;
+}
+
+/* ================= GRID ================= */
+.grid{
+    width:92%;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+    padding-bottom:80px;
+}
+
+/* ================= CARD ================= */
+.card{
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    transition:0.3s;
+    position:relative;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+}
+
+.card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+/* content */
+.card-content{
+    padding:10px;
+}
+
+.price{
+    color:#5a3a24;
+    font-weight:bold;
+}
+
+/* buttons */
+.btns{
+    display:flex;
+    gap:8px;
+    padding:10px;
+}
+
+.btns button{
+    flex:1;
+    padding:8px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.add-btn{ background:#f3c18b; }
+.buy-btn{ background:#5a3a24; color:white; }
+
+/* ================= CART BUTTON ================= */
+.cart-btn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#5a3a24;
+    color:white;
+    padding:12px 15px;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+#toast{
+    position:fixed;
+    top:30px;
+    right:30px;
+    background:#333;
+    color:white;
+    padding:15px 25px;
+    border-radius:12px;
+    opacity:0;
+    transform:translateY(-20px);
+    transition:.4s;
+    z-index:9999;
+}
+
+#toast.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+#toast.success{
+    background:#2e7d32;
+}
+
+#toast.error{
+    background:#c62828;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="navbar">
+    <h3>ClayConnect</h3>
+</div>
+
+<!-- HERO -->
+<div class="hero-mini">
+    <h1 id="heroTitle"></h1>
+    <p id="heroDesc"></p>
+</div>
+
+<!-- SEARCH -->
+<div class="search-box">
+    <input type="text" id="search" placeholder="Search products">
+    <select id="filter">
+        <option value="all">All</option>
+        <option value="low">Low Price</option>
+        <option value="high">High Price</option>
+    </select>
+</div>
+
+<!-- GRID -->
+<div id="grid" class="grid"></div>
+
+<!-- CART BUTTON -->
+<div class="cart-btn" onclick="goCart()">🛒</div>
+
+<script>
+"use strict";
+
+let allItems = [];
+let cat = "";
+
+/* ================= CART COUNT ================= */
+function updateCartCount(){
+
+    let user = JSON.parse(localStorage.getItem("user"));
+    let el = document.getElementById("cartCount");
+
+    if(!el) return;
+
+    if(!user){
+        el.innerText = 0;
+        return;
+    }
+
+    fetch("http://localhost:5000/cart?email=" + user.email)
+    .then(res=>res.json())
+    .then(data=>{
+        el.innerText = data.length || 0;
+    })
+    .catch(()=>{
+        el.innerText = 0;
+    });
+}
+
+/* ================= INIT ================= */
+window.onload = function(){
+
+    updateCartCount();
+
+    cat = new URLSearchParams(window.location.search).get("cat");
+
+    if(!cat){
+        alert("Category missing");
+        return;
+    }
+
+    document.getElementById("heroTitle").innerText = cat.toUpperCase();
+    document.getElementById("heroDesc").innerText = "Handmade clay collection";
+
+    fetch(`http://localhost:5000/products?cat=${cat}`)
+    .then(res=>res.json())
+    .then(data=>{
+        allItems = data || [];
+        render(allItems);
+    });
+
+    document.getElementById("search").addEventListener("input",(e)=>{
+        let val = e.target.value.toLowerCase();
+        render(allItems.filter(i=>i.name.toLowerCase().includes(val)));
+    });
+
+    document.getElementById("filter").addEventListener("change",(e)=>{
+        let val = e.target.value;
+        let arr = [...allItems];
+
+        if(val==="low"){
+            arr.sort((a,b)=>parseFloat(a.price.replace("₹",""))-parseFloat(b.price.replace("₹","")));
+        }
+        if(val==="high"){
+            arr.sort((a,b)=>parseFloat(b.price.replace("₹",""))-parseFloat(a.price.replace("₹","")));
+        }
+
+        render(arr);
+    });
+};
+
+/* ================= RENDER ================= */
+function render(items){
+
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    items.forEach(item=>{
+
+        const div = document.createElement("div");
+        div.className="card";
+
+        div.innerHTML=`
+            <img src="${item.img}">
+            <div class="card-content">
+                <h4>${item.name}</h4>
+                <p class="price">${item.price}</p>
+            </div>
+
+            <div class="btns">
+                <button class="add-btn">Add</button>
+                <button class="buy-btn">Buy</button>
+            </div>
+        `;
+
+        div.querySelector(".add-btn").onclick = ()=> addToCart(item);
+        div.querySelector(".buy-btn").onclick = ()=> buyNow(item);
+
+        grid.appendChild(div);
+    });
+}
+
+/* ================= ADD TO CART (FIXED) ================= */
+function addToCart(item){
+
+    let user = JSON.parse(localStorage.getItem("user"));
+
+    if(!user){
+        alert("Login required ❌");
+        return;
+    }
+
+    if(!item.id){
+        alert("Product error ❌");
+        return;
+    }
+
+    fetch("http://localhost:5000/cart",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+            user_email: user.email,
+            product_id: item.id
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        alert(data.message || "Added 🛒");
+        updateCartCount();
+    })
+    .catch(()=>{
+        alert("Cart error ❌");
+    });
+}
+
+/* ================= BUY ================= */
+function buyNow(item){
+    localStorage.setItem("buyNowItem", JSON.stringify(item));
+    window.location.href = "payment.html";
+}
+
+/* ================= CART PAGE ================= */
+function goCart(){
+    window.location.href = "cart.html";
+}
+
+</script>
+
+</body>
+</html> 

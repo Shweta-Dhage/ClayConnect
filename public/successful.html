@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Order Success</title>
+
+    <style>
+
+        body{
+            background:#f7f2ed;
+            font-family:Arial;
+        }
+
+        .success-box{
+
+            width:500px;
+            margin:100px auto;
+
+            background:white;
+
+            padding:40px;
+
+            border-radius:20px;
+
+            text-align:center;
+
+            box-shadow:0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1{
+            color:green;
+        }
+
+        h3{
+            margin:20px 0;
+            color:#444;
+        }
+
+        #paymentId{
+            margin:20px 0;
+            color:#8b5e3c;
+            font-weight:bold;
+        }
+
+        a{
+            background:#8b5e3c;
+            color:white;
+            padding:14px 30px;
+            text-decoration:none;
+            border-radius:10px;
+            display:inline-block;
+        }
+
+        a:hover{
+            background:#6b4328;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="success-box">
+
+    <h1>✅ Payment Successful</h1>
+
+    <h3>Order Placed Successfully</h3>
+
+    <p id="paymentId"></p>
+
+    <br>
+
+    <a href="index.html">
+        Continue Shopping
+    </a>
+
+</div>
+
+<script>
+
+const params =
+new URLSearchParams(window.location.search);
+
+document.getElementById("paymentId").innerHTML =
+"Payment ID : " +
+params.get("payment");
+
+</script>
+
+</body>
+
+</html>
