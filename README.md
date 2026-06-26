@@ -27,16 +27,31 @@ ClayConnect is a pottery marketplace web application designed to connect local p
 ## Screenshots
 
 ### Home Page
-![Home Page](./screenshots/home.png)
+![Home Page](Screenshots/home.png)
 
-### Product Listing
-![Product Listing](./screenshots/products.png)
+### Login Page
+![Login](Screenshots/login.png)
 
-### Checkout / Payment
-![Checkout](./screenshots/checkout.png)
+### Customer Signup
+![Customer Signup](Screenshots/customersignup.png)
+
+### Potter Signup
+![Potter Signup](Screenshots/pottersignup.png)
+
+### Cart Page
+![Cart](Screenshots/cart.png)
+
+### Payment Page
+![Payment](Screenshots/payment.png)
 
 ### Potter Dashboard
-![Potter Dashboard](./screenshots/potter-dashboard.png)
+![Potter Dashboard](Screenshots/potterpage.png)
+
+### Potter Products
+![Potter Products](Screenshots/potterpage2.png)
+
+### Contact Page
+![Contact](Screenshots/contact.png)
 
 ## Project Structure
 
