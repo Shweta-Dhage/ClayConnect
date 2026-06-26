@@ -76,7 +76,7 @@ function createOrderCard(order) {
     return div;
 }
 
-/* ================= SECURITY FIX ================= */
+/* ================= SECURITY ================= */
 function escapeHTML(str) {
     return String(str)
         .replaceAll("&", "&amp;")

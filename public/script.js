@@ -197,7 +197,7 @@ function sendMessage(){
 }
 
 
-// ================= CART COUNT (FIXED) =================
+// ================= CART COUNT  =================
 function updateCartCount(){
 
     let user = JSON.parse(localStorage.getItem("user"));
@@ -223,7 +223,7 @@ function updateCartCount(){
 updateCartCount();
 
 
-// ================= CART ADD (FIXED SAFE) =================
+// ================= CART ADD  =================
 function addToCart(item){
 
     let user = JSON.parse(localStorage.getItem("user"));
@@ -516,7 +516,7 @@ function registerPotter(){
     });
 }
 
-// ================= REAL TIME VALIDATIONS =================
+// ================= VALIDATIONS =================
 
 // LOGIN
 document.getElementById("loginUser").addEventListener("input", function () {

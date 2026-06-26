@@ -24,6 +24,20 @@ ClayConnect is a pottery marketplace web application designed to connect local p
 - Database MySQL
 - Other Tools  Libraries Razorpay, Multer, JWT, bcrypt
 
+## Screenshots
+
+### Home Page
+![Home Page](./screenshots/home.png)
+
+### Product Listing
+![Product Listing](./screenshots/products.png)
+
+### Checkout / Payment
+![Checkout](./screenshots/checkout.png)
+
+### Potter Dashboard
+![Potter Dashboard](./screenshots/potter-dashboard.png)
+
 ## Project Structure
 
 ```bash

@@ -4,7 +4,7 @@
 
 let cart = JSON.parse(localStorage.getItem("checkoutItems")) || [];
 
-/* BUY NOW SUPPORT */
+/* BUY NOW  */
 if (cart.length === 0) {
 
     let buyItem =
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderOrder();
 });
 
-/* ================= PRICE FIX ================= */
+/* ================= PRICE ================= */
 
 function getPrice(price) {
 

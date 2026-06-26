@@ -7,18 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
     loadCart();
 });
 
-/* ================= IMAGE FIX ================= */
+/* ================= IMAGE  ================= */
 function fixImg(img) {
     if (!img) return "http://localhost:5000/uploads/default.png";
     if (img.startsWith("http")) return img;
     return "http://localhost:5000/" + img.replace(/\\/g, "/");
 }
 
-/* ================= PRICE FIX ================= */
+/* ================= PRICE  ================= */
 function getPrice(price) {
     if (!price) return 0;
 
-    // remove ₹ if coming from backend
     if (typeof price === "string") {
         price = price.replace("₹", "");
     }
@@ -28,7 +27,6 @@ function getPrice(price) {
 
 /* ================= LOAD CART ================= */
 function loadCart() {
-
     const container = document.getElementById("cartItems");
     if (!container) return;
 
@@ -40,9 +38,8 @@ function loadCart() {
     fetch("http://localhost:5000/cart?email=" + user.email)
         .then(res => res.json())
         .then(data => {
-
             cart = data.map(item => ({
-                id: item.id,                // cart row id
+                id: item.id, // cart row id
                 product_id: item.product_id,
                 name: item.name,
                 img: item.img,
@@ -57,9 +54,23 @@ function loadCart() {
         });
 }
 
+/* ================= UPDATE CART QTY ================= */
+function updateCartQty(productId, qty) {
+    return fetch("http://localhost:5000/cart", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_email: user.email,
+            product_id: productId,
+            qty: qty
+        })
+    }).then(res => res.json());
+}
+
 /* ================= RENDER CART ================= */
 function renderCart() {
-
     const container = document.getElementById("cartItems");
     container.innerHTML = "";
 
@@ -70,7 +81,6 @@ function renderCart() {
     }
 
     cart.forEach((item, index) => {
-
         const div = document.createElement("div");
         div.className = "cart-card";
 
@@ -98,10 +108,19 @@ function renderCart() {
 
         /* ================= MINUS ================= */
         div.querySelector(".minus").onclick = () => {
+            if (item.qty > 1) {
+                const newQty = item.qty - 1;
 
-            if (cart[index].qty > 1) {
-                cart[index].qty--;
-                renderCart(); // UI update only
+                updateCartQty(item.product_id, newQty)
+                    .then(data => {
+                        if (data.success) {
+                            cart[index].qty = newQty;
+                            renderCart();
+                        } else {
+                            alert(data.message || "Qty update failed ❌");
+                        }
+                    })
+                    .catch(() => alert("Qty update failed ❌"));
             } else {
                 removeItem(item.product_id);
             }
@@ -109,8 +128,18 @@ function renderCart() {
 
         /* ================= PLUS ================= */
         div.querySelector(".plus").onclick = () => {
-            cart[index].qty++;
-            renderCart(); // UI update only
+            const newQty = item.qty + 1;
+
+            updateCartQty(item.product_id, newQty)
+                .then(data => {
+                    if (data.success) {
+                        cart[index].qty = newQty;
+                        renderCart();
+                    } else {
+                        alert(data.message || "Qty update failed ❌");
+                    }
+                })
+                .catch(() => alert("Qty update failed ❌"));
         };
 
         container.appendChild(div);
@@ -121,7 +150,6 @@ function renderCart() {
 
 /* ================= REMOVE ITEM ================= */
 function removeItem(productId) {
-
     fetch("http://localhost:5000/cart", {
         method: "DELETE",
         headers: {
@@ -133,13 +161,18 @@ function removeItem(productId) {
         })
     })
         .then(res => res.json())
-        .then(() => loadCart())
+        .then(data => {
+            if (data.success) {
+                loadCart();
+            } else {
+                alert(data.message || "Remove failed ❌");
+            }
+        })
         .catch(() => alert("Remove failed ❌"));
 }
 
 /* ================= SUMMARY ================= */
 function updateSummary() {
-
     const totalItemsEl = document.getElementById("totalItems");
     const totalPriceEl = document.getElementById("totalPrice");
 
@@ -157,13 +190,11 @@ function updateSummary() {
 
 /* ================= CHECKOUT ================= */
 function checkout() {
-
     if (cart.length === 0) {
         alert("Cart Empty ❌");
         return;
     }
 
     localStorage.setItem("checkoutItems", JSON.stringify(cart));
-
     window.location.href = "payment.html";
 }

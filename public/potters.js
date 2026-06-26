@@ -3,7 +3,7 @@
 let user = JSON.parse(localStorage.getItem("potter")) || {};
 
 document.getElementById("welcome").innerText =
-    "Welcome " + (user.name || "Potter") + " 🏺";
+    "Welcome " + (user.name || "Potter") ;
 
 document.getElementById("owner").innerText =
     user.name || "Potter";

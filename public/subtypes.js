@@ -4,74 +4,77 @@ let allItems = [];
 let cat = "";
 
 window.onload = function () {
+    const grid = document.getElementById("grid");
+    const searchEl = document.getElementById("search");
+    const filterEl = document.getElementById("filter");
+    const heroTitle = document.getElementById("heroTitle");
+    const heroDesc = document.getElementById("heroDesc");
 
     cat = new URLSearchParams(window.location.search).get("cat");
 
-    const grid = document.getElementById("grid");
+    // Hero text
+    heroTitle.innerText = cat ? cat.toUpperCase() : "ALL PRODUCTS";
+    heroDesc.innerText = "Handmade clay collection";
 
-    if (!cat) {
-        grid.innerHTML = "<h2>Category Missing</h2>";
-        return;
+    // Fetch products
+    let url = "http://localhost:5000/products";
+    if (cat) {
+        url += `?cat=${encodeURIComponent(cat)}`;
     }
 
-    document.getElementById("heroTitle").innerText =
-        cat.toUpperCase();
-
-    document.getElementById("heroDesc").innerText =
-        "Handmade clay collection";
-
-    fetch(`http://localhost:5000/products?cat=${cat}`)
+    fetch(url)
         .then(res => res.json())
         .then(data => {
-
-            console.log(data);
-
-            allItems = data;
-
-            render(allItems);
+            allItems = Array.isArray(data) ? data : [];
+            applyFilters();
         })
         .catch(err => {
             console.log(err);
             grid.innerHTML = "<h2>Server Error</h2>";
         });
 
-    document.getElementById("search").addEventListener("input", e => {
+    // Search
+    searchEl.addEventListener("input", applyFilters);
 
-        let val = e.target.value.toLowerCase();
-
-        render(
-            allItems.filter(i =>
-                i.name.toLowerCase().includes(val)
-            )
-        );
-    });
-
-    document.getElementById("filter").addEventListener("change", e => {
-
-        let arr = [...allItems];
-
-        if (e.target.value === "low") {
-            arr.sort((a, b) =>
-                parseFloat(a.price.replace("₹", "")) -
-                parseFloat(b.price.replace("₹", ""))
-            );
-        }
-
-        if (e.target.value === "high") {
-            arr.sort((a, b) =>
-                parseFloat(b.price.replace("₹", "")) -
-                parseFloat(a.price.replace("₹", ""))
-            );
-        }
-
-        render(arr);
-    });
+    // Sort filter
+    filterEl.addEventListener("change", applyFilters);
 };
 
-function render(items) {
-
+function applyFilters() {
     const grid = document.getElementById("grid");
+    const searchEl = document.getElementById("search");
+    const filterEl = document.getElementById("filter");
 
+    let val = searchEl.value.trim().toLowerCase();
+    let filtered = [...allItems];
+
+    // Search filter
+    if (val) {
+        filtered = filtered.filter(item =>
+            item.name.toLowerCase().includes(val)
+        );
+    }
+
+    // Sort filter
+    if (filterEl.value === "low") {
+        filtered.sort((a, b) =>
+            Number(a.price.replace("₹", "")) -
+            Number(b.price.replace("₹", ""))
+        );
+    }
+
+    if (filterEl.value === "high") {
+        filtered.sort((a, b) =>
+            Number(b.price.replace("₹", "")) -
+            Number(a.price.replace("₹", ""))
+        );
+    }
+
+    render(filtered);
+}
+
+function render(items) {
+    const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
     if (!items.length) {
@@ -80,13 +83,11 @@ function render(items) {
     }
 
     items.forEach(item => {
-
         const div = document.createElement("div");
-
         div.className = "card";
 
         div.innerHTML = `
-            <img src="${item.img}">
+            <img src="${item.img}" alt="${item.name}">
             <div class="card-content">
                 <h4>${item.name}</h4>
                 <p class="price">${item.price}</p>
@@ -98,20 +99,15 @@ function render(items) {
             </div>
         `;
 
-        div.querySelector(".add-btn").onclick =
-            () => addToCart(item);
-
-        div.querySelector(".buy-btn").onclick =
-            () => buyNow(item);
+        div.querySelector(".add-btn").onclick = () => addToCart(item);
+        div.querySelector(".buy-btn").onclick = () => buyNow(item);
 
         grid.appendChild(div);
     });
 }
 
 function addToCart(item) {
-
-    let user =
-        JSON.parse(localStorage.getItem("user"));
+    let user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
         alert("Login required");
@@ -128,19 +124,22 @@ function addToCart(item) {
             product_id: item.id
         })
     })
-    .then(res => res.json())
-    .then(() => {
-        alert("Added to cart");
-    });
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message || "Added to cart");
+            } else {
+                alert(data.message || "Failed to add to cart");
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            alert("Server error");
+        });
 }
 
 function buyNow(item) {
-
-    localStorage.setItem(
-        "buyNowItem",
-        JSON.stringify(item)
-    );
-
+    localStorage.setItem("buyNowItem", JSON.stringify(item));
     window.location.href = "payment.html";
 }
 
